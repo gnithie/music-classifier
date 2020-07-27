@@ -2,54 +2,69 @@ import numpy as np
 
 import tensorflow as tf
 from tensorflow.keras.layers import Dense, Input, Dropout
-from tensorflow.keras.layers import Conv2D, Flatten, MaxPool2D # Lambda, 
-# from tensorflow.keras.layers import Reshape # , Conv2DTranspose
-# from tensorflow.keras.models import Model
-# from tensorflow.keras.losses import mse, binary_crossentropy
-# from tensorflow.keras.utils import plot_model
-# from tensorflow.keras.callbacks import CSVLogger
-# from tensorflow.keras import backend as K
+from tensorflow.keras.layers import Conv2D, Flatten, MaxPool2D 
 
 
-def build_model():
+def build_model(params, target_size):
+
+    filters = params.filters
+    kernel_size = params.kernel_size
+    padding = params.padding
+    strides = params.strides
+    activation = params.activation
+    dense = params.dense
+    dropout1 = params.dropout1
+    dropout2 = params.dropout2
+    pool_size = params.pool_size
+
     model = tf.keras.Sequential()
     model.add(tf.keras.Input(shape=(9, 64, 1)))
-    model.add(Conv2D(filters = 32, kernel_size = (9,3), padding = 'same', strides = 1,activation = 'relu'))
-    model.add(MaxPool2D(pool_size = (2, 2)))
-    model.add(Dropout(0.2))
-    
-    model.add(Conv2D(filters = 64, kernel_size = (9,3), padding = 'same', strides = 1,activation = 'relu'))
-    model.add(MaxPool2D(pool_size = (2, 2)))
-    model.add(Dropout(0.2))
 
-    # model.add(Conv2D(filters = 128, kernel_size = (9,3), padding = 'same', strides = 1,activation = 'relu'))
-    # model.add(MaxPool2D(pool_size = (2, 2), padding = 'same'))
-    # model.add(Dropout(0.2))
-
-    # model.add(Conv2D(filters = 128, kernel_size = (9,3), padding = 'same', strides = 1,activation = 'relu'))
-    # model.add(MaxPool2D(pool_size = (2, 2), padding = 'same'))
-    # model.add(Dropout(0.2))
-
-    # model.add(Conv2D(filters = 128, kernel_size = (3,3), padding = 'same', strides = 1,activation = 'relu'))
-    # model.add(MaxPool2D(pool_size = (3,3), padding = 'same'))
-    # model.add(Dropout(0.2))
-
-
-    # model.add(Conv2D(filters = 64, kernel_size = (3,3), padding = 'same', strides = 1,activation = 'relu'))
-    # model.add(MaxPool2D(pool_size = (3,3)))
-    # model.add(Dropout(0.2))
-
+    for i in range(len(filters)):
+        if i != 0:
+            model.add(Conv2D(filters = filters[i], 
+                            kernel_size = kernel_size, 
+                            padding = padding, 
+                            strides = strides,
+                            activation = activation))
+        model.add(Conv2D(filters = filters[i], 
+                        kernel_size = kernel_size, 
+                        padding = padding, 
+                        strides = strides,
+                        activation = activation))
+        model.add(MaxPool2D(pool_size = pool_size, 
+                            padding = 'same'))
+        if (dropout1 != None):
+            model.add(Dropout(dropout1))
 
     model.add(Flatten())
-    model.add(Dense(16, activation = "relu"))
 
-    model.add(Dropout(0.2))
-    model.add(Dense(5, activation = "softmax"))
+    for i in range(len(dense)):
+        model.add(Dense(dense[i], activation = activation))
+
+    if (dropout2 != None):
+        model.add(Dropout(dropout2))
+    
+    model.add(Dense(target_size, activation = "softmax"))
 
     model.compile(
         optimizer='adam',
         loss=['categorical_crossentropy'],
         metrics=['accuracy']
     )
+    print(model.layers)
+    print(len(model.layers))
     model.summary()
+    
     return model
+
+# if __name__ == "__main__":
+    # build_model(filters=(32,64,128,256),
+    #             kernel_size=(3,3),
+    #             padding='same',
+    #             strides=1,
+    #             activation='relu',
+    #             pool_size=(2,2),
+    #             dropout1=0.2,
+    #             dropout2=0.2,
+    #             target_size=5)
