@@ -1,5 +1,6 @@
 
 TARGET_GENRES = ["Blues", "Country", "Electronic", "Jazz","Rock"]
+TARGET_SECTIONS = ['Chorus', "Fills", "Intro", "Outro", "Verse"]
 
 DRUM_NAMES = ["BD", "SD", "CH", "OH", "RD", "CR", "LT", "MT", "HT"]
 
@@ -33,8 +34,22 @@ PITCH_DRUMINDEX = {
 
 GET_DEFAULTS = {
     "midi_path" : "../data/Groove_Monkee_Mega_Pack_GM/",
+    "midi_path_full" : "../data/Groove_Monkee_Mega_Pack_GM_Full/",
     "model_path" : "../output/",
     "model_file" : "../output/Groove_Monkee_Mega_Pack_GM.h5",
-    "X_data" : "../data/Groove_Monkee_Mega_Pack_GM_X.npy",
-    "y_data" : "../data/Groove_Monkee_Mega_Pack_GM_y.npy"
+    "X" : "../data/Groove_Monkee_Mega_Pack_GM_X.npy",
+    "y" : "../data/Groove_Monkee_Mega_Pack_GM_y.npy",
+    "X_data1" : "../data/Groove_Monkee_Mega_Pack_GM_Full_X1.npy",
+    "y_data1" : "../data/Groove_Monkee_Mega_Pack_GM_Full_y1.npy",
+
+    "filters" : (32,64,128,256),
+    "kernel_size" : (3,3),
+    "padding" : 'same',
+    "strides" : 1,
+    "activation" : 'relu',
+    "pool_size" : (2,2),
+    "dense" : (256, 128, 32),
+    "dropout1" : None,
+    "dropout2" : None,
+    "target_size" : 5
 }
