@@ -19,3 +19,8 @@ def split_data(X, y):
     X_test = np.reshape(X_test, [-1, 9, 64, 1])
     return X_train, X_test, y_train, y_test
     
+def write_csv(result, filename='result'):
+    res = ','.join(str(v) for v in result)
+    f= open('../output/' + filename + '.csv',"a+")
+    f.write(res + '\n')
+    f.close()

@@ -144,7 +144,7 @@ if __name__ == "__main__":
     result.append(f1_score)
     result.append("\"" + str(y_conf_matrix) + "\"")
     result.append("\"" + str(cls_report) + "\"")
-    write_csv(result)
+    write_csv(result, 'result_BM')
     # res = ','.join(str(v) for v in result)
     # f= open("../output/result_S_result.csv","a+")
     # f.write(res + '\n')
