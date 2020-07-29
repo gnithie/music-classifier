@@ -36,11 +36,15 @@ GET_DEFAULTS = {
     "midi_path" : "../data/Groove_Monkee_Mega_Pack_GM/",
     "midi_path_full" : "../data/Groove_Monkee_Mega_Pack_GM_Full/",
     "model_path" : "../output/",
-    "model_file" : "../output/Groove_Monkee_Mega_Pack_GM.h5",
+    "model_file_G" : "../output/Model_G_",
+    "model_file_TL_S" : "../output/Model_TL_S_",
+    "model_file_S" : "../output/Model_S_",
+    "model_file_TL_G" : "../output/Model_TL_G_",
+
     "X" : "../data/Groove_Monkee_Mega_Pack_GM_X.npy",
     "y" : "../data/Groove_Monkee_Mega_Pack_GM_y.npy",
-    "X_data1" : "../data/Groove_Monkee_Mega_Pack_GM_Full_X1.npy",
-    "y_data1" : "../data/Groove_Monkee_Mega_Pack_GM_Full_y1.npy",
+    "X1" : "../data/Groove_Monkee_Mega_Pack_GM_Full_X1.npy",
+    "y1" : "../data/Groove_Monkee_Mega_Pack_GM_Full_y1.npy",
 
     "filters" : (32,64,128,256),
     "kernel_size" : (3,3),
