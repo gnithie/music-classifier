@@ -23,7 +23,7 @@ def plot_epochs(history, epochs, filename):
     ax1.plot(range(epochs), history.history['accuracy'], label = 'Training Accuracy')
     ax1.plot(range(epochs), history.history['val_accuracy'], label = 'Validation Accuracy')
     ax1.set_ylim(0, 1)
-    ax2.set_ylim(0, 1)
+    # ax2.set_ylim(0, 1)
     ax2.plot(range(epochs), history.history['loss'], label = 'Training Loss')
     ax2.plot(range(epochs), history.history['val_loss'], label = 'Validation Loss')
     ax1.set_title('Traiing and Validation Accuracy')
