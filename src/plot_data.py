@@ -70,12 +70,6 @@ def plot_epochs(history, epochs, filename):
 #     # umap.plot.points(u, labels=y_train)
 #     # umap.plot.plt.show()
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
     # plot_embedding()
-
-    
-
-
-
-
 
