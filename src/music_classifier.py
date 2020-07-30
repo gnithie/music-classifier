@@ -117,7 +117,7 @@ if __name__ == "__main__":
 
     
     model.save(GET_DEFAULTS['model_file_G'] + params.modelname+ '.h5')
-    plot_epochs(history, GET_DEFAULTS['model_file_G'] + params.modelname)
+    plot_epochs(history, 40, GET_DEFAULTS['model_file_G'] + params.modelname)
     # plot_confusion_matrix(cmn, TARGET_GENRES)
     
     # y_conf_matrix = confusion_matrix(np.argmax(y_test, axis =1), np.argmax(y_pred, axis =1))

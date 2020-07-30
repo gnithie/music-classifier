@@ -100,7 +100,7 @@ if __name__ == "__main__":
     # print(cls_report)
 
     model.save(GET_DEFAULTS['model_file_TL_S'] + params.modelname+ '_' + str(params.train_layer) + '.h5')
-    plot_epochs(history, GET_DEFAULTS['model_file_TL_S'] + params.modelname+ '_' + str(params.train_layer))
+    plot_epochs(history, 40, GET_DEFAULTS['model_file_TL_S'] + params.modelname+ '_' + str(params.train_layer))
 
     result = []
     result.append(params.modelname)
