@@ -2,7 +2,7 @@ import numpy as np
 
 from sklearn.metrics import confusion_matrix, precision_recall_fscore_support, classification_report
 
-def confusion_matrix(actual, prediction, categorical = True):
+def confusion_mtx(actual, prediction, categorical = True):
     if categorical:
         actual = np.argmax(actual, axis =1)
         prediction = np.argmax(prediction, axis =1)
