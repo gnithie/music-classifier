@@ -1,8 +1,6 @@
 import argparse
 import numpy as np
 
-from sklearn.metrics import confusion_matrix, precision_recall_fscore_support, classification_report
-
 import tensorflow as tf
 from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.models import load_model, Model
@@ -12,7 +10,7 @@ from constants import GET_DEFAULTS, TARGET_SECTIONS
 from utilities import load_data, split_data, write_csv
 from cnn_model import build_model
 from plot_data import plot_confusion_matrix, plot_epochs
-from evaluation import confusion_matrix, f_score
+from evaluation import confusion_mtx, f_score
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(argument_default=argparse.SUPPRESS)
@@ -86,7 +84,7 @@ if __name__ == "__main__":
     test_history = model.evaluate(X_test, y_test)
     y_pred = model.predict(X_test) 
 
-    y_conf_matrix = confusion_matrix(y_test, y_pred)
+    y_conf_matrix = confusion_mtx(y_test, y_pred)
     f1_score, cls_report = f_score(y_test, y_pred)
 
     # y_conf_matrix = confusion_matrix(np.argmax(y_test, axis =1), np.argmax(y_pred, axis =1))
