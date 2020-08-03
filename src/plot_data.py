@@ -1,15 +1,16 @@
 import numpy as np
+import os
 
 import seaborn as sb
 import matplotlib.pyplot as plt
 import umap
 import umap.plot
 
-# # from tensorflow.keras.models import load_model, Model
-# # import tensorflow as tf
+from tensorflow.keras.models import load_model, Model
+import tensorflow as tf
 
-# from constants import GET_DEFAULTS, TARGET_GENRES
-# from utilities import load_data, split_data
+from constants import GET_DEFAULTS, TARGET_GENRES, TARGET_SECTIONS
+from utilities import load_data, split_data
 
 
 def plot_confusion_matrix(data, label, filename='plot'):
@@ -52,24 +53,32 @@ def plot_epochs(history, epochs, filename):
 
 
 
-# def plot_embedding():
-#     X, y = load_data('../data/Groove_Monkee_Mega_Pack_GM_Full_X1.npy', '../data/Groove_Monkee_Mega_Pack_GM_Full_y1.npy')
-#     base_model = load_model('../output/Base_SECTION_TL_GENRE/Model_S_94_2_32_0.h5')
-#     # y = to_categorical(y)
-#     X_train, X_test, y_train, y_test = split_data(X, y)
-#     model = tf.keras.Sequential(base_model.layers[:-1])
-#     # model.summary()
-#     y1 = model.predict(X_train)
-#     print(y1.shape)
-#     fit = umap.UMAP(n_neighbors=15)
-#     # print(y1)
-#     u = fit.fit_transform(y1)
-#     print(u[:, 0].shape, u[:, 1].shape)
-#     plt.scatter(u[:, 0], u[:, 1], c=y_train)
-#     plt.show()
-#     # umap.plot.points(u, labels=y_train)
-#     # umap.plot.plt.show()
+def plot_embedding(model_file, X=GET_DEFAULTS['X'], y=GET_DEFAULTS['y']):
+    X, y = load_data(X, y)
+    base_model = load_model(model_file)
+    X = np.reshape(X, [-1, 9, 64, 1])
+    model = tf.keras.Sequential(base_model.layers[:-1])
+    y_pred = model.predict(X)
+    print(y_pred.shape)
+    fit = umap.UMAP(n_neighbors=15)
+    u = fit.fit_transform(y_pred)
+    print(u[:, 0].shape, u[:, 1].shape)
+    scatter = plt.scatter(u[:, 0], u[:, 1], c=y, alpha=0.5)
+    plt.legend(handles=scatter.legend_elements()[0], labels=TARGET_SECTIONS)
+    plt.savefig(model_file.replace(".h5", "_umap.png"))
+    plt.close()
+    # plt.show()
+    # u = fit.fit(y_pred)
+    # umap.plot.points(u, labels=y)
+    # umap.plot.plt.show()
 
-# if __name__ == "__main__":
-    # plot_embedding()
+if __name__ == "__main__":
+    path = '../output/BaseSection_TLGenre_40Epochs\model'
+    for root, dirs, files in os.walk(path):
+        for file in files:
+            if file.endswith('.h5') and '_TL_G_' in file:
+                plot_embedding(os.path.join(path, file))
+                print(os.path.join(path, file))
+
+    # plot_embedding('../output/BaseGenre_TLSection/model/Model_G_33_1_22_0.h5')
 
