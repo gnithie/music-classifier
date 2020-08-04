@@ -1,5 +1,6 @@
 import argparse
 import os
+import re
 import numpy as np
 from collections import Counter
 
@@ -13,6 +14,88 @@ nsteps = 64
 nsteps_per_beat = 2
 max_beats = 32
 pitch = Counter()
+
+def load_both_data(path):
+    count = 0
+    X, y1, y2 = [], [], []
+    rejected = accepted = 0
+    for dir in (os.listdir(path)):
+        print(dir.split()[0])
+        for root, dirs, files in os.walk(os.path.join(path, dir)):
+    # for root, dirs, files in os.walk(path):
+            genre_label = [genre for genre in TARGET_GENRES if genre.lower() in root.lower()]
+            section_label = [section for section in TARGET_SECTIONS if section.lower() in root.lower()]
+            # print(data)
+            if len(genre_label) > 0 and len(section_label) > 0:
+
+                for file in files:
+                    # print(root, file)
+                    if file.endswith('.mid'):
+                        filepath = os.path.join(root, file)
+                        # print(filepath)
+                        midi_data = read_midi(filepath)
+                        info = midi_info(midi_data)
+                        if (info["time_sig_num"] != 4 or
+                            (info["track_length_in_beats"] not in (8, 16, 32))):
+                            rejected += 1
+                            continue
+                        accepted += 1
+                        numpy_data = midi2numpy(midi_data)
+                        # np.add(numpy_data, TARGET_LABELS.index(dir.split()[0]))
+                        X.append(numpy_data)
+                        # print(data[0])
+                        y1.append(TARGET_GENRES.index(genre_label[len(genre_label) -1]))
+                        y2.append(TARGET_SECTIONS.index(section_label[len(section_label) -1]))
+    print('rejected', rejected, 'accepted', accepted)
+    X = np.array(X)
+    y1 = np.array(y1)
+    y2 = np.array(y2)
+    np.save(path.rstrip("/") + "_both_X.npy", X)
+    np.save(path.rstrip("/") + "_both_y1.npy", y1)
+    np.save(path.rstrip("/") + "_both_y2.npy", y2)
+    print('Result')
+    print(X.shape)
+    print(y1.shape, y2.shape)
+    print(Counter(y1))
+    print(Counter(y2))
+
+def load_data(path):
+    # for dir in (os.listdir(path)):
+    #     print(dir.split()[0])
+    count = 0
+    X, y = [], []
+    rejected = accepted = 0
+    for root, dirs, files in os.walk(path):
+        data = [genre for genre in TARGET_SECTIONS if genre.lower() in root.lower()]
+        # print(data)
+        if len(data) > 0:
+
+            for file in files:
+                # print(root, file)
+                if file.endswith('.mid'):
+                    filepath = os.path.join(root, file)
+                    # print(filepath)
+                    midi_data = read_midi(filepath)
+                    info = midi_info(midi_data)
+                    if (info["time_sig_num"] != 4 or
+                        (info["track_length_in_beats"] not in (8, 16, 32))):
+                        rejected += 1
+                        continue
+                    accepted += 1
+                    numpy_data = midi2numpy(midi_data)
+                    # np.add(numpy_data, TARGET_LABELS.index(dir.split()[0]))
+                    X.append(numpy_data)
+                    print(data[0])
+                    y.append(TARGET_SECTIONS.index(data[len(data) -1]))
+    print('rejected', rejected, 'accepted', accepted)
+    X = np.array(X)
+    y = np.array(y)
+    np.save(path.rstrip("/") + "_X1.npy", X)
+    np.save(path.rstrip("/") + "_y1.npy", y)
+    print('Result')
+    print(X.shape)
+    print(y.shape)
+    print(Counter(y))
 
 def convert_midi2numpy(path):
     X, y = [], []
@@ -113,11 +196,13 @@ if __name__ == '__main__':
     parser.add_argument(
         '--midipath', 
         type = str, 
-        default = GET_DEFAULTS["midi_path"],
-        help = 'path to midi folder, default ' + GET_DEFAULTS["midi_path"]
+        default = GET_DEFAULTS["midi_path_full"],
+        help = 'path to midi folder, default ' + GET_DEFAULTS["midi_path_full"]
     )
     params = parser.parse_args()
 
-    convert_midi2numpy(params.midipath)
+    # convert_midi2numpy(params.midipath)
+    # load_data(params.midipath)
+    load_both_data(params.midipath)
 
 
