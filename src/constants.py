@@ -1,9 +1,9 @@
+TARGET_GENRES = ["Blues", "Country", "Electronic", "Jazz","Rock"]   #list for Genre Labels
+TARGET_SECTIONS = ['Chorus', "Fills", "Intro", "Outro", "Verse"]    #list for Section Labels
 
-TARGET_GENRES = ["Blues", "Country", "Electronic", "Jazz","Rock"]
-TARGET_SECTIONS = ['Chorus', "Fills", "Intro", "Outro", "Verse"]
+DRUM_NAMES = ["BD", "SD", "CH", "OH", "RD", "CR", "LT", "MT", "HT"] #list for Drum names
 
-DRUM_NAMES = ["BD", "SD", "CH", "OH", "RD", "CR", "LT", "MT", "HT"]
-
+#dictionary for drum index to pitch
 DRUMINDEX_to_PITCH = {
     0: 36, # BD Bass
     1: 38, # SD Snare
@@ -16,6 +16,7 @@ DRUMINDEX_to_PITCH = {
     8: 48  # HT High Tom
 }
 
+#dictionary for pitch to drum index
 PITCH_DRUMINDEX = {
     35: 0, 36: 0,                             # BD
     38: 1, 40: 1,                             # SD
@@ -32,20 +33,36 @@ PITCH_DRUMINDEX = {
     67: 8, 68: 7                              # agogos high to low (use HT, MT)
     }
 
+#default values for hyperparamters
 GET_DEFAULTS = {
+    #path for midi data
     "midi_path" : "../data/Groove_Monkee_Mega_Pack_GM/",
     "midi_path_full" : "../data/Groove_Monkee_Mega_Pack_GM_Full/",
+
+    #output folder path
     "model_path" : "../output/",
-    "model_file_G" : "../output/Model_G_",
-    "model_file_TL_S" : "../output/Model_TL_S_",
+
+    #model file names based on their type
+    "model_file_G" : "../output/BaseGenre_TLSection/model/Model_G_",
+    "model_file_TL_S" : "../output/BaseGenre_TLSection/model/Model_TL_S_",
     "model_file_S" : "../output/Model_S_",
     "model_file_TL_G" : "../output/Model_TL_G_",
-
+    "model_file_MO" : "../output/Model_MO_",
+    
+    #file details for Genre 
     "X" : "../data/Groove_Monkee_Mega_Pack_GM_X.npy",
     "y" : "../data/Groove_Monkee_Mega_Pack_GM_y.npy",
+
+    #file details for Section 
     "X1" : "../data/Groove_Monkee_Mega_Pack_GM_Full_X1.npy",
     "y1" : "../data/Groove_Monkee_Mega_Pack_GM_Full_y1.npy",
 
+    #file details for Multioutput model 
+    "X_both" : "../data/Groove_Monkee_Mega_Pack_GM_both_X.npy",
+    "y1_both" : "../data/Groove_Monkee_Mega_Pack_GM_both_y1.npy",
+    "y2_both" : "../data/Groove_Monkee_Mega_Pack_GM_both_y2.npy", 
+
+    #cnn hyperparameters default values
     "filters" : (32,64,128,256),
     "kernel_size" : (3,3),
     "padding" : 'same',

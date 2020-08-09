@@ -4,8 +4,19 @@ import tensorflow as tf
 from tensorflow.keras.layers import Dense, Input, Dropout
 from tensorflow.keras.layers import Conv2D, Flatten, MaxPool2D 
 
+"""
+A File for cnn model construction based on hyperparameters
+"""
 
 def build_model(params, target_size):
+    '''
+    Function to build cnn model
+
+    :param params : hyperparameters to build cnn
+    :param target_size : size of the final softmax layer
+
+    :returns model object
+    '''
 
     filters = params.filters
     kernel_size = params.kernel_size
