@@ -9,6 +9,9 @@ import midi
 
 from constants import *
 
+"""
+A file to process the midi data. Load, convert and store Midi file into numpy data
+"""
 
 nsteps = 64
 nsteps_per_beat = 2
@@ -16,6 +19,12 @@ max_beats = 32
 pitch = Counter()
 
 def load_both_data(path):
+    '''
+    Function to convert midi file into numpy that satisfies both Genre and Section conditions
+
+    :param path : A filepath to midi folder
+    '''
+
     count = 0
     X, y1, y2 = [], [], []
     rejected = accepted = 0
@@ -26,7 +35,7 @@ def load_both_data(path):
             genre_label = [genre for genre in TARGET_GENRES if genre.lower() in root.lower()]
             section_label = [section for section in TARGET_SECTIONS if section.lower() in root.lower()]
             # print(data)
-            if len(genre_label) > 0 and len(section_label) > 0:
+            if (len(genre_label) > 0 and len(section_label) > 0) or 'Electronic' in genre_label:
 
                 for file in files:
                     # print(root, file)
@@ -42,10 +51,20 @@ def load_both_data(path):
                         accepted += 1
                         numpy_data = midi2numpy(midi_data)
                         # np.add(numpy_data, TARGET_LABELS.index(dir.split()[0]))
+                        if 'Electronic' in  genre_label :
+                            target_genre = TARGET_GENRES.index('Electronic')
+                            if 'fill' in file:
+                                target_section = TARGET_SECTIONS.index('Fills')
+                            else:
+                                target_section = TARGET_SECTIONS.index('Verse')
+                            print(target_genre, target_section)
+                        else:
+                            target_genre = TARGET_GENRES.index(dir.split()[0])
+                            target_section = TARGET_SECTIONS.index(section_label[len(section_label) -1])
                         X.append(numpy_data)
                         # print(data[0])
-                        y1.append(TARGET_GENRES.index(genre_label[len(genre_label) -1]))
-                        y2.append(TARGET_SECTIONS.index(section_label[len(section_label) -1]))
+                        y1.append(target_genre)
+                        y2.append(target_section)
     print('rejected', rejected, 'accepted', accepted)
     X = np.array(X)
     y1 = np.array(y1)
@@ -60,6 +79,12 @@ def load_both_data(path):
     print(Counter(y2))
 
 def load_data(path):
+    '''
+    Function to convert midi file into numpy that satisfies Section conditions
+
+    :param path : A filepath to midi folder
+    '''
+
     # for dir in (os.listdir(path)):
     #     print(dir.split()[0])
     count = 0
@@ -98,6 +123,11 @@ def load_data(path):
     print(Counter(y))
 
 def convert_midi2numpy(path):
+    '''
+    Function to convert midi file into numpy that satisfies both Genre conditions
+
+    :param path : A filepath to midi folder
+    '''
     X, y = [], []
     rejected = accepted = 0
     for dir in (os.listdir(path)):
@@ -130,6 +160,14 @@ def convert_midi2numpy(path):
     print(pitch)
     
 def midi2numpy(midi_data):
+    '''
+    Function to convert Midi data into numpy data
+
+    :param midi_data : dictionary containing midi data information
+
+    :returns numpy data contains midi information
+    '''
+
     info = midi_info(midi_data)
 
     data_len = nsteps_per_beat * info["track_length_in_beats"]
@@ -160,6 +198,14 @@ def convert_time(ticks, maxticks, nsteps_this_loop):
     return x
 
 def read_midi(file):
+    '''
+    Function to read midi data
+
+    :param file : filepath of midi data
+
+    :returns midi data
+    '''
+
     if not file.endswith('.mid'):
         raise ValueError
     midi_data = midi.read_midifile(file)
@@ -167,6 +213,14 @@ def read_midi(file):
     return midi_data
 
 def midi_info(midi_data):
+    '''
+    Function to store midi information into dictionary
+
+    :param midi_data : midi data 
+
+    :returns dictionary contains midi information
+    '''
+
     info = {}
     info["resolution"] = midi_data.resolution
 
@@ -196,8 +250,8 @@ if __name__ == '__main__':
     parser.add_argument(
         '--midipath', 
         type = str, 
-        default = GET_DEFAULTS["midi_path_full"],
-        help = 'path to midi folder, default ' + GET_DEFAULTS["midi_path_full"]
+        default = GET_DEFAULTS["midi_path"],
+        help = 'path to midi folder, default ' + GET_DEFAULTS["midi_path"]
     )
     params = parser.parse_args()
 

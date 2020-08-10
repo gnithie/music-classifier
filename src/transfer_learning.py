@@ -12,6 +12,9 @@ from cnn_model import build_model
 from plot_data import plot_confusion_matrix, plot_epochs
 from evaluation import confusion_mtx, f_score
 
+"""
+A file to construct Transfer learning Model for Music classification 
+"""
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(argument_default=argparse.SUPPRESS)
     '''
@@ -21,7 +24,7 @@ if __name__ == "__main__":
         '--model', 
         type = str, 
         default = GET_DEFAULTS["model_path"],
-        help = 'path to model file, default ' + GET_DEFAULTS["model_path"]
+        help = 'path to save model file, default ' + GET_DEFAULTS["model_path"]
     )
     parser.add_argument(
         '--Xdata', 
@@ -38,30 +41,33 @@ if __name__ == "__main__":
     parser.add_argument(
         '--modelname', 
         type = str, 
-        help = 'path to target data file, default '
+        help = 'path to base model file, default '
     )
     parser.add_argument(
         '--embedding_val', 
         type = int, 
-        help = 'path to target data file, default '
+        help = 'final layer considered from Base model for embedding'
     )
     parser.add_argument(
         '--train_layer', 
         type = int, 
         default = 0,
-        help = 'path to target data file, default '
+        help = 'layer from which model is trainable '
     )
     params = parser.parse_args()
 
+    # load from npy files 
     X, y = load_data(params.Xdata, params.ydata)
     y = to_categorical(y)
     print(X.shape, y.shape)
 
+    # split data for Train and Test
     X_train, X_test, y_train, y_test = split_data(X, y)
-    print(X_train.shape, X_test.shape, y_train.shape, y_test.shape)
     
+    #load base model from model filename
     base_model = load_model(GET_DEFAULTS['model_file_G'] + params.modelname+ '.h5')
     
+    # Retrieve embedding layer from Base model and set trainable param 
     model = tf.keras.Sequential(base_model.layers[:params.embedding_val])
     if params.train_layer == 0:
         for layer in model.layers:
@@ -72,6 +78,7 @@ if __name__ == "__main__":
         for layer in range(params.train_layer, len(model.layers)):
             model.layers[layer].trainable = True
 
+    # add final softmax layer for transfer learning task
     model.add(Dense(y_train.shape[1], activation='softmax', name='output'))
     model.summary()
     model.compile(
@@ -79,27 +86,25 @@ if __name__ == "__main__":
         loss=['categorical_crossentropy'],
         metrics=['accuracy']
     )
+
+    # fit the CNN model. 20% of data is set for validation during training
     history = model.fit(X_train, y_train, epochs=40, batch_size=128, validation_split=0.2)
     
+    # model evaluation
     test_history = model.evaluate(X_test, y_test)
     y_pred = model.predict(X_test) 
 
+    #model evaluation metrics. Confusion matrix and f score
     y_conf_matrix = confusion_mtx(y_test, y_pred)
     f1_score, cls_report = f_score(y_test, y_pred)
 
-    # y_conf_matrix = confusion_matrix(np.argmax(y_test, axis =1), np.argmax(y_pred, axis =1))
-    # cmn = np.around(y_conf_matrix.astype('float') / y_conf_matrix.sum(axis=1)[:, np.newaxis], decimals = 2)
-    # print(cmn)
-    # # plot_confusion_matrix(cmn, TARGET_SECTIONS)
-    # f1_score = precision_recall_fscore_support(np.argmax(y_test, axis =1), np.argmax(y_pred, axis =1), average='macro')
-    # print(f1_score)
-
-    # cls_report = classification_report(np.argmax(y_test, axis =1), np.argmax(y_pred, axis =1), digits=4)
-    # print(cls_report)
-
+    # save transfer learning model
     model.save(GET_DEFAULTS['model_file_TL_S'] + params.modelname+ '_' + str(params.train_layer) + '.h5')
+    
+    # plot learning curve for loss and accuracy
     plot_epochs(history, 40, GET_DEFAULTS['model_file_TL_S'] + params.modelname+ '_' + str(params.train_layer))
 
+    # log metrics into csv file
     result = []
     result.append(params.modelname)
     result.append(history.history['accuracy'][-1])
@@ -112,7 +117,3 @@ if __name__ == "__main__":
     result.append("\"" + str(y_conf_matrix) + "\"")
     result.append("\"" + str(cls_report) + "\"")
     write_csv(result, 'result_TL')
-    # res = ','.join(str(v) for v in result)
-    # f= open("../output/result_TL_G_result.csv","a+")
-    # f.write(res + '\n')
-    # f.close()
