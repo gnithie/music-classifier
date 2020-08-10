@@ -121,8 +121,8 @@ def plot_embedding(model_file, X=GET_DEFAULTS['X'], y=GET_DEFAULTS['y']):
     scatter = plt.scatter(u[:, 0], u[:, 1], c=y, alpha=0.5)
     plt.legend(handles=scatter.legend_elements()[0], labels=TARGET_SECTIONS)
     plt.savefig(model_file.replace(".h5", "_umap.png"))
-    plt.close()+
-    
+    plt.close()
+
 
 if __name__ == "__main__":
     path = '../output/BaseSection_TLGenre_40Epochs\model'
