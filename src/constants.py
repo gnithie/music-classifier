@@ -45,9 +45,9 @@ GET_DEFAULTS = {
     #model file names based on their type
     "model_file_G" : "../output/BaseGenre_TLSection/model/Model_G_",
     "model_file_TL_S" : "../output/BaseGenre_TLSection/model/Model_TL_S_",
-    "model_file_S" : "../output/Model_S_",
-    "model_file_TL_G" : "../output/Model_TL_G_",
-    "model_file_MO" : "../output/Model_MO_",
+    "model_file_S" : "../output/BaseSection_TLGenre_40Epochs/model/Model_S_",
+    "model_file_TL_G" : "../output/BaseSection_TLGenre_40Epochs/model/Model_TL_G_",
+    "model_file_MO" : "../output/MultiOutput_3/Model_MO_",
     
     #file details for Genre 
     "X" : "../data/Groove_Monkee_Mega_Pack_GM_X.npy",
