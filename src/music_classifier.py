@@ -8,7 +8,7 @@ from constants import GET_DEFAULTS, TARGET_GENRES
 from utilities import load_data, split_data, write_csv
 from cnn_model import build_model
 from plot_data import plot_confusion_matrix, plot_epochs
-from evaluation import confusion_matrix, f_score
+from evaluation import confusion_mtx, f_score
 
 """
 A file to construct Base Model for Music classification 
